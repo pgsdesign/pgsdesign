@@ -7,3 +7,16 @@ Addition and Subtraction
 (7,13) + (12,13) = (19,13) then you do 19 % 13 which equals 6 so you end up with (6,13) 
 (7,13) - (12,13) = (-5,13) then you do -5 % 13 which equals 8 so you end up with (8,13)
 
+Multiplication Division and Exponents
+
+
+
+eliptical point addition
+x1, y1 = 2, 5
+x2, y2 = -1, -1
+s = (y2 - y1) / (x2 - x1)
+x3 = s ** 2 - x1 - x2
+y3 = s * (x1 - x3) - y1
+(x3, y3)
+           
+(3.0, -7.0)
