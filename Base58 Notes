@@ -1,1 +1,16 @@
 Intro to Encoding
+Encodings
+Endianess (sort of related to encodings)
+Base58 (name of the school, used to use it a lot in btc)
+
+new to bitfiddling
+
+What's up with encoding and the common bitcoin ones
+
+What is an encoding?
+taking some normal information - ie want to tell someone the number 5, tell them out loud, but since computers it has to be written down, send character 5, takes up 1 space, take info like 5 or 10 and how we write that down and express it. 
+the other person we want to send it to needs to decode the info so we need a shared understanding of the encoding being used
+what character set is it?
+weird language - Y means 5 as we are used to it.
+If I didn't tell you I was using weird language you would not understand how to interpret the info
+cool thing about encodings - translate between one encoding to the next so it could be "5" or "the number five"
