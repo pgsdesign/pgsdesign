@@ -14,3 +14,65 @@ what character set is it?
 weird language - Y means 5 as we are used to it.
 If I didn't tell you I was using weird language you would not understand how to interpret the info
 cool thing about encodings - translate between one encoding to the next so it could be "5" or "the number five"
+
+Encode Numbers
+
+Decimals - 10 characters, (0 1 2 3 4 5 6 7 8 9)
+
+
+hexadecimals - 16 characters (0 1 2 3 4 5 6 7 8 9 A B C D E F)
+
+hex: 0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F
+
+dec: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+
+Eleven in hex:  b
+Eleven in dec: 11
+
+Save space using hex
+
+dec: 10282948  10,282,948
+hex.   9ce7c4 need less space
+
+can ask python
+hex(10282948)
+'0x9ce7c4'
+
+"0x" means that the next thing is encoded in hex
+
+little endian arrangement?
+
+4 * 16^0 + 12 * 16^1 + 7 * 16^2 + 14 * 16^3 + 12 * 16^4 + 9 * 16^5 = 10282948
+4 + 192 + 1792 + 57344 + 786432 + 9437184 = 10282948
+
+General formula to convert from any encoding to decimals (we are native speakers of) character value (look this up) * the number of characters in the encoding (hex = 16) raised to the power of the position of that character in the whole set.
+
+character value (look this up)
+times
+the number of characters in the encoding (hex = 16)
+raised to the power of the position of that character in the whole set
+
+From decimal to another encoding:
+
+10282948 % 16 = 4 - first mod by the number of characters (4 in hex)
+
+(10282948 - 4) % 16**2 = 192 then divide by 16 to get 12 (c in hex)
+10282944
+
+(10282944 - 192) % 16**3 = 1792 then divide by 16**2 to get 7 (7 in hex)
+10282752
+
+(10282752 - 1792) % 16**4 = 57344 then divide by 16**3 to get 
+
+
+
+
+
+
+
+
+
+
+
+
+
