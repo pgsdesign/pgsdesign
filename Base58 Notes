@@ -20,15 +20,22 @@ Encode Numbers
 Decimals - 10 characters, (0 1 2 3 4 5 6 7 8 9)
 hexadecimals - 16 characters (0 1 2 3 4 5 6 7 8 9 A B C D E F)
 binary: - 2 characters (0 1)
+base58: 58 characters (123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz)
+byte: ...256
 
-hex: 0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F (16 char set)
+hex:    0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F (16 char set)
 
-dec: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (10 char set)
+dec:    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (10 char set)
 
-bin: 0 1 (2 char set)
+bin:    0 1 (2 char set)
+
+base58: 1
+
+bytes: .... 256
 
 Eleven in hex:  b
 Eleven in dec: 11
+Eleven in b58: 
 
 Save space using hex
 
@@ -81,33 +88,119 @@ after 9 you have to send 10
 can't fit more in 9 and we want one more so we need to add a slot.
 
 count to 10 in binary
+00000000 --> 0
+11111111 --> 255      biggest number you can fit in a byte sized bucket
+             0 ->  0
+             1 ->  1
+            10 ->  2
+            11 ->  3
+           100 ->  4
+           101 ->  5
+           110 ->  6
+           111 ->  7
+          1000 ->  8
+          1001 ->  9
+          1010 -> 10
 
-    0 ->  0
-    1 ->  1
-   10 ->  2
-   11 ->  3
-  100 ->  4
-  101 ->  5
-  110 ->  6
-  111 ->  7
- 1000 ->  8
- 1001 ->  9
- 1010 -> 10
+sort of fun other encoding base58 stuff 
 
-sort of fun other encoding base58
+addresses that are public keys on mainnet always start with 1
+
+addresses that are made from more complicated scripts start with 3
+
+how do encodings relate to bitcoin
+pre segwit
+
+segwit - uses a different encoding called bech32
+
+python wants the values in hex when working with base58
+
+addr = base58.b58decode('3EVrDr2UpkLqRWza2vjyvboF5AXaqLsfD6')
+addr.hex()
+'058c7cf6077890b9a47744ce6326116bda102fd2b17dbe9a55'
+int(addr.hex(), 16)
+34830267579360635884357608966033687849564572378415648119381
+
+addr = base58.b58decode('3EVrDr2UpkLqRWza2vjyvboF5AXaqLsfD6')
+addr.hex()
+'058c7cf6077890b9a47744ce6326116bda102fd2b17dbe9a55'
+int(addr.hex(), 16)
+34830267579360635884357608966033687849564572378415648119381
+
+You notice that it's more compact going from decimal, to hex, and to base58. 
+You get more runes per "space"
 
 
+Endianness - are we going backwards or are we going forwards when figuring out what the decimal value of this is?
+smallest value bytes on the left is little endian, largest value on the left is big endian.
+
+new concept *bytes* --> number buckets
+
+8-bits --> 8  binary character in a row. is the amount of space we have in a byte
+
+int('11111111', 2)
+255
+
+bytes.fromhex('ff')
+b'\xff'
+bytes.fromhex('ff00')
+b'\xff\x00'
+>>> bytes.fromhex('058c7cf6077890b9a47744ce6326116bda102fd2b17dbe9a55')
+b'\x05\x8c|\xf6\x07x\x90\xb9\xa4wD\xcec&\x11k\xda\x10/\xd2\xb1}\xbe\x9aU'
+>>> vals = bytes.fromhex('058c7cf6077890b9a47744ce6326116bda102fd2b17dbe9a55')
+>>> [b for b in bytes(vals)]
+[5, 140, 124, 246, 7, 120, 144, 185, 164, 119, 68, 206, 99, 38, 17, 107, 218, 16, 47, 210, 177, 125, 190, 154, 85]
+>>> bb = [b for b in bytes(vals)]
+>>> for num in bb:
+...     print(num)
+... 
+5
+140
+124
+246
+7
+120
+144
+185
+164
+119
+68
+206
+99
+38
+17
+107
+218
+16
+47
+210
+177
+125
+190
+154
+85
+
+Little Endian - the ::-1 reverses bb
+>>> bb[::-1] - reverse the list
+[85, 154, 190, 125, 177, 210, 47, 16, 218, 107, 17, 38, 99, 206, 68, 119, 164, 185, 144, 120, 7, 246, 124, 140, 5]
+
+>>> for index, num in enumerate(bb[::-1]):
+...     val = num * 256**index
+...     sum += val
+... 
+>>> sum
+34830267579360635884357608966033687849564572378415648119381
+
+Big Endian
+>>> sum
+0
+>>> for index, num in enumerate(bb):
+...     val = num * 256**index
+...     sum += val
+... 
+>>> sum
+537347961933047319564711057038003994006750646414151631277061
+>>> 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+https://www.youtube.com/watch?v=bKVmhaRqsCg
