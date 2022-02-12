@@ -18,12 +18,14 @@ cool thing about encodings - translate between one encoding to the next so it co
 Encode Numbers
 
 Decimals - 10 characters, (0 1 2 3 4 5 6 7 8 9)
-
 hexadecimals - 16 characters (0 1 2 3 4 5 6 7 8 9 A B C D E F)
+binary: - 2 characters (0 1)
 
-hex: 0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F
+hex: 0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F (16 char set)
 
-dec: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+dec: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (10 char set)
+
+bin: 0 1 (2 char set)
 
 Eleven in hex:  b
 Eleven in dec: 11
@@ -71,6 +73,30 @@ From decimal to another encoding:
 (9437184 - 9437184) 0
 
 9 c e 7 c 4 
+
+when you can no longer send anymore info in a single char, now we need to send 2 chars
+
+after 9 you have to send 10
+
+can't fit more in 9 and we want one more so we need to add a slot.
+
+count to 10 in binary
+
+    0 ->  0
+    1 ->  1
+   10 ->  2
+   11 ->  3
+  100 ->  4
+  101 ->  5
+  110 ->  6
+  111 ->  7
+ 1000 ->  8
+ 1001 ->  9
+ 1010 -> 10
+
+sort of fun other encoding base58
+
+
 
 
 
