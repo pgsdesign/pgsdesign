@@ -19,7 +19,6 @@ Encode Numbers
 
 Decimals - 10 characters, (0 1 2 3 4 5 6 7 8 9)
 
-
 hexadecimals - 16 characters (0 1 2 3 4 5 6 7 8 9 A B C D E F)
 
 hex: 0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F
@@ -39,8 +38,6 @@ hex(10282948)
 '0x9ce7c4'
 
 "0x" means that the next thing is encoded in hex
-
-little endian arrangement?
 
 4 * 16^0 + 12 * 16^1 + 7 * 16^2 + 14 * 16^3 + 12 * 16^4 + 9 * 16^5 = 10282948
 4 + 192 + 1792 + 57344 + 786432 + 9437184 = 10282948
@@ -62,7 +59,19 @@ From decimal to another encoding:
 (10282944 - 192) % 16**3 = 1792 then divide by 16**2 to get 7 (7 in hex)
 10282752
 
-(10282752 - 1792) % 16**4 = 57344 then divide by 16**3 to get 
+(10282752 - 1792) % 16**4 = 57344 then divide by 16**3 to get 14 (e in hex)
+10280960
+
+(10280960 - 57344) % 16**5 = 786432 then divide by 16**4 to get 12 (c in hex)
+10223616
+
+(10223616 - 786432) % 16**6 = 9437184 then divide by 16**5 to get 9 (9 in hex)
+9437184
+
+(9437184 - 9437184) 0
+
+9 c e 7 c 4 
+
 
 
 
