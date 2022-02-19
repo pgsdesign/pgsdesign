@@ -29,13 +29,15 @@ dec:    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (10 char set)
 
 bin:    0 1 (2 char set)
 
-base58: 1
+base58: 123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz (58 char set)
+	Don't want 0OIl characters that look the same in some fonts
+	could be used to create visually identical looking account numbers.
 
 bytes: .... 256
 
 Eleven in hex:  b
 Eleven in dec: 11
-Eleven in b58: 
+Eleven in b58: C or 4k8 - don't know why it's not C
 
 Save space using hex
 
@@ -204,3 +206,195 @@ Big Endian
 
 
 https://www.youtube.com/watch?v=bKVmhaRqsCg
+
+
+
+https://basicbitch.software/posts/2022-02-12-who-gets-what-and-why,-liquidity-ads-edition.html
+
+https://medium.com/blockstream/lightnings-missing-piece-a-decentralized-liquidity-market-a0bb47534a4f
+
+
+FEBRUARY 14TH 2022 - FIRST CLASS
+
+What is a transaction
+Bitcoin tx -> transaction <- protocol class
+- Transactions, fields, txid
+- script, assign bitcoin to people, move it around
+	what protects bitcon
+- signatures, eliptic crypto, finite fields, how public private keys work
+	sighashes -  tx_hash mailing list Russel O'Connor
+- multisig, psbts, ??
+Strategies for getting txs mined
+
+grab a transaction 723343 (799 transactions) - 65910a2ea90391d1d19be66ef8b1718cecbb49fc48887f743d6a099f869b08f3
+
+Grab the raw transaction - bitcoin-cli getrawtransaction 65910a2ea90391d1d19be66ef8b1718cecbb49fc48887f743d6a099f869b08f3
+
+Entire transaction is in hex
+
+0100000001913f3edcafa48bcd5742225a752f3dd8cef35596dfb0fce551c5b455ce0a02d63b0000006a473044022062f4f61766e1edf89b9b94d0629d67bfefb62e6ffec63f17d0f10ce5e329dbf4022039d566558c1f98742345e70b194bbcb8b8fff5b7fa2f0507c9f31a5a2ea24749012103fc3e6b07b7bec800cb0861c172344687d146888aaf0f811eaca8b1ef6684c9fc0000008002f07e0e000000000017a914783b39e49c6b6544a51bf0cbd4f47eef116be81987e0ec0400000000001976a91456c0bc2f50bc150d4ea122e66db7c48b01b9722988ac00000000
+
+Split it up into fields
+Bitcoin -> form a lot like a form you fill out at DMV - register car example, name, VIN, make model etc signature date and send it to DMV. Another example would be a check you write to someone.
+
+Version (nVersion 4-bytes, fixed, little endian): 01000000 -> 1
+
+INPUT count of inputs (compactSize field): 01
+		                 txid (fixed, 32 bytes): 913f3edcafa48bcd5742225a752f3dd8cef35596dfb0fce551c5b455ce0a02d6
+		                 
+                output number (fixed, 8 bytes): 3b000000 -> 59 - but that really means 60 tx because it's 0 indexed.
+                
+The above tx id and output number is a reference to another output in another transactin that *previously existed* in the bitcoin blockchain - it's an arrow that points to the output of another tx. To see that transaction you have to flip it since it's a fixed little endian field with this python code
+	bytes.fromhex('913f3edcafa48bcd5742225a752f3dd8cef35596dfb0fce551c5b455ce0a02d6')[::-1].hex()
+	'd6020ace55b4c551e5fcb0df9655f3ced83d2f755a224257cd8ba4afdc3e3f91'
+	then getrawtransaction and it's a big output because there are 59 in there
+	then decoderawtransaction to get the nice list of transactions from bitcoin-cli
+	then found the input indicated by the output number (59 or 3b000000 in little endian hex)
+	the value of that output is "value": 0.01315269,
+	the locking script (scriptPubKey) of that is "hex": "76a9141204fe7ba32421865e067e8415225847dc213b2688ac",
+	
+	This is now SPENT - no one can spend it ever again.
+	                
+scriptSig (unlocking script, variable length, 1st byte is length, compactSize field): 6a
+data of scriptSig: variable length, big endian 473044022062f4f61766e1edf89b9b94d0629d67bfefb62e6ffec63f17d0f10ce5e329dbf4022039d566558c1f98742345e70b194bbcb8b8fff5b7fa2f0507c9f31a5a2ea24749012103fc3e6b07b7bec800cb0861c172344687d146888aaf0f811eaca8b1ef6684c9fc
+
+                    nSequence (fixed, 4-bytes): 00000080
+IF THERE WERE MORE Transactions THIS WOULD REPEAT FOR EACH ONE              
+     
+OUTPUT(s) count of outputs (compactSize field): 02
+
+amount (how much bitcoin is this "output" worth) 8-bytes little endian : f07e0e0000000000
+Python work to get to sats from amount - 
+amt_1_bytes = bytes.fromhex('f07e0e0000000000')
+amt_1_bytes
+b'\xf0~\x0e\x00\x00\x00\x00\x00'
+amt_1_bytes[::-1]
+b'\x00\x00\x00\x00\x00\x0e~\xf0'
+amt_1_bytes[::-1].hex()
+'00000000000e7ef0'
+int('00000000000e7ef0', 16)
+950000
+
+amount in sats = 950000 
+amount in btc = 0.0095,0000
+
+scriptPubKey (locking script) again 1st byte is length compactSize field: 17
+data of scriptPubKey (locking script) variable length, big endian: a914783b39e49c6b6544a51bf0cbd4f47eef116be81987
+
+
+amount:e0ec040000000000
+Python work to get sats from amount in one line
+amt_2_bytes = int(bytes.fromhex('e0ec040000000000')[::-1].hex(), 16)
+amt_2_bytes
+322784 sats
+0.0032,2784 btc
+
+scriptPubKey (locking script):19 76a91456c0bc2f50bc150d4ea122e66db7c48b01b9722988ac
+
+nLocktime 4-bytes fixed: 00000000
+
+The structure of a transaction is
+Version,
+Inputs,
+Outputs,
+Locktime
+
+Two (really 3) types of fields
+fixed length fields - pre-set number of bytes allowed for the field. Always little endian
+variable length fields - there is no pre-set length. instead a length byte and then data for that field. Always big endian.
+compactSize field - hybrid fixed/variable length field. always used to tell a size. "lisa can't remember :)" let's find the compactSize source code.
+
+When are tx *valid*?
+
+These transactions we are working with or the "form" --> pre-Segwit -> next week SegWit
+
+
+Three questions:
+- how much bitcoin does this transaction lock up? NOTE: a satoshi is the denomination of the amount field onan output in a bitcoin transaction. Related: dust is a relay problem, when we talk about getting your tx mined. The smallest valid amount you can have it a tx is 0100000000000000 (little endian hex) - can't really have one that small for other reasons.
+	A: sum of all the amount fields in the outputs 1272784 sats or 0.0127,2784 btc
+	
+- how much bitcoin was spent into this transaction?
+	A: 0.0131,5269
+	
+- how much did this transaction pay in fees?
+	A: 42485 sats - missing money - goes to the coinbase (fees miner)
+	
+	fees do not show up on the tx, but they *do* show up in the block
+	block is a list of Transactions
+	all inputs in a block: input amt >= output amt but it should == output - then coinbase makes it output is greater
+	all outputs in a block: output amt
+	every tx (except 1) pays a fee, which means
+	input > output "losing money" but the entire block is equal because of the coinebase transaction.
+	There is only one person who can make a coinbase transaction
+	the person that mines the block
+	coinbase is special because it has NO INPUTS
+	IT DOES NOT SPEND ANY OUTPUTS. no prior UTXO that the coinbase spends
+	does have outputs!!
+	money for the outputs comes from:
+		all the other transactions - the money they didn't include in their outputs (fees)
+		block subsidy. this is where new bitcoin comes from - determined by the number of the block 6.25 now
+		TOTAL AMOUNT AVAILABLE for a MINER in the COINTBASE TX: 
+			all the bitcoin the txs in the block did not include in their outputs PLUS
+			the block subsidy of 6.25 btc
+6.27697814 - 6.25 = fees for 799 txs = 0.0269,7814			
+			
+			
+			
+a transaction is two things
+	-destroys outputs. marks it as spent. ->inputs: 1
+	-creates new outputs: 2
+	
+when making a new transaction
+	- which existing outputs are you destroying? inputs -> outputs in a different tx
+	- what new outputs are you creating? outputs
+	
+How does bitcoin core know if an output is available to be spent? 2 tx with the same input are known as a DOUBLE SPEND
+
+UTXO set -> unspent transaction output
+
+bitcon core node
+new block
+	go through the list of inputs to every tx
+	makes sure it's in it's UTXO set -> none of the inputs are double spent
+	remove that UTXO from the utxo set b/c it's been spent in a tx
+	new block with a tx comes in: 
+		im spending 913f3edcafa48bcd5742225a752f3dd8cef35596dfb0fce551c5b455ce0a02d6:59 (the colon 59 is the transaction used in c-lightning)
+		im creating two new outputs. [0,1]
+		tx: newTXid
+		0,1
+one extra output. UTXO set of the entire bitcoin network has grown by +1
+	
+	Murch on twitter has a lot on UTXO sets (@murchandamus)	
+		
+		
+list of UTXOs 
+	tx:913f3edcafa48bcd5742225a752f3dd8cef35596dfb0fce551c5b455ce0a02d6
+	0-58,60-66
+block explorer
+list of tx
+tx have list of outputs and inputs
+
+
+initial block download
+- new bitcoin core node
+- asking peers for blocks starting at the base - block genesis
+- gets new blocks --> verification process
+
+You can burn bitcoin
+	spend to an unspendable output
+	miners don't claim the full block reward plus fees
+	
+Next CLASS
+	compactSize
+	when are txs *valid*
+	locktime
+	sequence numbers
+	version
+	where do txids come from
+	running out of utxos??
+	segwit txs
+	script
+	unspendable outputs - learn about scripts etc
+	
+	
+	
