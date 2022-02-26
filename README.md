@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @pgsdesign
 - 👀 I’m interested in bitcoin and the lightning network
-- 🌱 I’m currently learning Programming Bitcoin by Jimmy Song
+- 🌱 I’m currently taking a bitcoin transaction class with @niftynei of @base58btc
 - 💞️ I’m looking to collaborate on beginner stuff in this space as I get my shit together.
 - 📫 How to reach me Twitter: @pgsdesign
 
